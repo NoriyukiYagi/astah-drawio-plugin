@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+	<extension point="com.change_vision.astah.ui.actionSets">
+		<actionSet
+			id="astah_drawio_plugin.actionSet">
+			<menu
+				id="astah_drawio_plugin"
+				label="%menu_group"
+				path="tool/astah_drawio_plugin">
+			</menu>
+			<action
+				label="%menu_label"
+				class="astah_drawio_plugin.OutputDrawioFileAction"
+				menubarPath="tool/astah_drawio_plugin/"
+				id="astah_drawio_plugin.OutputDrawioFileAction">
+			</action>
+		</actionSet>
+	</extension>
+</plugin>
