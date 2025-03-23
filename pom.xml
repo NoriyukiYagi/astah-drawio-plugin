@@ -170,8 +170,7 @@
 						</goals>
 					</execution>
 				</executions>
-				<!-- | the following instructions build a simple set of
-				public/private 
+				<!-- | the following instructions build a simple set of public/private 
 					classes into an OSGi bundle -->
 				<configuration>
 					<unpackBundle>true</unpackBundle>
@@ -179,8 +178,7 @@
 						<Bundle-SymbolicName>
 							${bundle.symbolicName}; singleton:=true</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<!-- | assume public classes are in the top package, and
-						private classes 
+						<!-- | assume public classes are in the top package, and private classes 
 							are under ".internal" -->
 						<Export-Package>
 							!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${project.version}"
@@ -189,8 +187,7 @@
 						<Bundle-Activator>${bundle.namespace}.Activator</Bundle-Activator>
 						<Astah-Version>${astah.version}</Astah-Version>
 						<Astah-Edition>${astah.edition}</Astah-Edition>
-						<!-- | each module can override these defaults in their
-						osgi.bnd file -->
+						<!-- | each module can override these defaults in their osgi.bnd file -->
 						<_include>-osgi.bnd</_include>
 						<Embed-Dependency>*;scope=compile|runtime;type=!pom</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>

@@ -132,4 +132,10 @@ public class ConvertAstahToDrawioTest {
 	void testActivityDiagram(String baseName) throws Exception {
 		testDiagram("activity/", baseName, "./test-result/activity", true);
 	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "SimpleDiagram", "Association", "Enumeration", "Package", "Icon" })
+	void testClassDiagram(String baseName) throws Exception {
+		testDiagram("class/", baseName, "./test-result/class", true);
+	}
 }

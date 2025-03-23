@@ -7,6 +7,7 @@ import com.mxgraph.view.mxGraph;
 public class MxGraphNodeBuilder extends MxGraphElementBuilder {
 
 	private MxGraphNodeBuilder parent;
+
 	private double x;
 	private double y;
 	private double width;
@@ -38,6 +39,22 @@ public class MxGraphNodeBuilder extends MxGraphElementBuilder {
 		return height;
 	}
 
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+	
 	public double getCenterX() {
 		return (x + width / 2);
 	}
@@ -69,6 +86,13 @@ public class MxGraphNodeBuilder extends MxGraphElementBuilder {
 		var geo = vertex.getGeometry();
 		geo.setRect(rx, ry, this.getWidth(), this.getHeight());
 
+		this.buildChildren(graph, vertex);
+
 		return vertex;
 	}
+
+	protected void buildChildren(mxGraph graph, mxCell parent) {
+		// no operation
+	}
+	
 }

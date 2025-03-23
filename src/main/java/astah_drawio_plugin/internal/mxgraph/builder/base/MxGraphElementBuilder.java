@@ -14,7 +14,7 @@ import com.mxgraph.view.mxGraph;
 
 public abstract class MxGraphElementBuilder {
 
-	private static String generateId() {
+	protected static String generateId() {
 		var uuid = UUID.randomUUID();
 		var byteBuffer = ByteBuffer.allocate(16);
 		byteBuffer.putLong(uuid.getMostSignificantBits());

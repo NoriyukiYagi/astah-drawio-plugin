@@ -13,7 +13,8 @@ public class MxGraphEdgeBuilder extends MxGraphElementBuilder {
 	private MxGraphNodeBuilder source;
 	private MxGraphNodeBuilder target;
 	private Point2D[] allPoints;
-
+	private boolean showLabel = true;
+	
 	public MxGraphEdgeBuilder(ILinkPresentation link, MxGraphNodeBuilder source, MxGraphNodeBuilder target) {
 		super(link);
 		this.source = source;
@@ -21,10 +22,19 @@ public class MxGraphEdgeBuilder extends MxGraphElementBuilder {
 		this.allPoints = link.getPoints();
 		setValue(link.getLabel());
 	}
+	
+	public void setShowLabel(boolean value) {
+		this.showLabel = value;
+	}
+	
+	public boolean showLabel() {
+		return this.showLabel;
+	}
 
 	@Override
 	protected mxCell build(mxGraph graph) {
-		var edge = (mxCell) graph.insertEdge(graph.getDefaultParent(), this.getId(), this.getLabel(), null, null,
+		var edgeValue = (this.showLabel) ? this.getLabel() : null;
+		var edge = (mxCell) graph.insertEdge(graph.getDefaultParent(), this.getId(), edgeValue, null, null,
 				this.getStyles());
 		var geo = edge.getGeometry();
 		geo.setSourcePoint(new mxPoint(this.allPoints[0]));
@@ -41,6 +51,12 @@ public class MxGraphEdgeBuilder extends MxGraphElementBuilder {
 			edge.setTarget(this.target.getOrBuild(graph));
 		}
 
+		this.buildChildren(graph, edge);
+
 		return edge;
+	}
+
+	protected void buildChildren(mxGraph graph, mxCell parent) {
+		// no operation
 	}
 }
