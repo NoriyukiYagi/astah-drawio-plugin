@@ -1,5 +1,6 @@
 package astah_drawio_plugin.internal.mxgraph.builder.node;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -24,24 +25,88 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 	private static int SEPARATOR_HEIGHT = 8;
 	private static int LINE_HEIGHT = 16;
 
-	private static String getVisibilityString(INamedElement e) {
-		if (e.isPrivateVisibility()) {
-			return "- ";
-		} else if (e.isProtectedVisibility()) {
-			return "# ";
-		} else if (e.isPackageVisibility()) {
-			return "~ ";
-		} else {
-			return "+ ";
-		}
-	}
-
 	private int classNameSeparatorPosition = 0;
 	private int attributesSeparatorPosition = 0;
 	private int calculatedHeight = 0;
 
+	private boolean isVisibilityVisible = true;
+
+	// Operation Visibility
+	private boolean isOperationCompartmentVisible = true;
+	private boolean isPublicOperationVisible = true;
+	private boolean isPackageOperationVisible = true;
+	private boolean isProtectedOperationVisible = true;
+	private boolean isPrivateOperationVisible = true;
+	private boolean isOperationStereotypeVisible = true;
+	private boolean isOperationConstraintVisible = true;
+	private boolean isOperationReturnTypeVisible = true;
+	private boolean isOperationParamVisible = true;
+	private boolean isOperationParamTypeVisible = true;
+	private boolean isOperationParamDirectionVisible = true;
+
+	// Attr Visibility
+	private boolean isAttrCompartmentVisible = true;
+	private boolean isPublicAttrVisible = true;
+	private boolean isPackageAttrVisible = true;
+	private boolean isProtectedAttrVisible = true;
+	private boolean isPrivateAttrVisible = true;
+	private boolean isAttrStereotypeVisible = true;
+	private boolean isAttrConstraintVisible = true;
+	private boolean isAttrTypeVisible = true;
+	private boolean isAttrInitialValueVisible = true;
+
 	public MxGraphClassBuilder(MxGraphNodeBuilder parent, INodePresentation p) {
 		super(parent, p);
+
+		this.setStereotypesVisible(Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.STEREOTYPE_VISIBILITY)));
+		this.isVisibilityVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.VISIBILITY_KIND_VISIBILITY));
+
+		// Operation Visibility
+		this.isOperationCompartmentVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.OPERATION_COMPARTMENT_VISIBILITY));
+		this.isPublicOperationVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.PUBLIC_OPERATION));
+		this.isPackageOperationVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.PACKAGE_OPERATION));
+		this.isProtectedOperationVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.PROTECTED_OPERATION));
+		this.isPrivateOperationVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.PRIVATE_OPERATION));
+		this.isOperationStereotypeVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.OPERATION_STEREOTYPE_VISIBILITY));
+		this.isOperationConstraintVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.OPERATION_CONSTRAINT_VISIBILITY));
+		this.isOperationReturnTypeVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.OPERATION_RETURN_TYPE_VISIBILITY));
+		this.isOperationParamVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.OPERATION_PARAMETER_VISIBILITY));
+		this.isOperationParamTypeVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.OPERATION_PARAMETER_TYPE_VISIBILITY));
+		this.isOperationParamDirectionVisible = Boolean.parseBoolean(
+				p.getProperty(PresentationPropertyConstants.Key.PVC_OPERATION_PARAMETER_DIRECTION_KIND_VISIBILITY));
+
+		// Attribute Visibility
+		this.isAttrCompartmentVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.ATTRIBUTE_COMPARTMENT_VISIBILITY));
+		this.isPublicAttrVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.PUBLIC_ATTRIBUTE));
+		this.isPackageAttrVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.PACKAGE_ATTRIBUTE));
+		this.isProtectedAttrVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.PROTECTED_ATTRIBUTE));
+		this.isPrivateAttrVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.PRIVATE_ATTRIBUTE));
+		this.isAttrStereotypeVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.ATTRIBUTE_STEREOTYPE_VISIBILITY));
+		this.isAttrConstraintVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.ATTRIBUTE_CONSTRAINT_VISIBILITY));
+		this.isAttrTypeVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.ATTRIBUTE_TYPE_VISIBILITY));
+		this.isAttrInitialValueVisible = Boolean
+				.parseBoolean(p.getProperty(PresentationPropertyConstants.Key.ATTRIBUTE_INITIAL_VALUE_VISIBILITY));
+
 		this.setValue(p.getLabel());
 
 		int lines = this.getLabel().split("\n").length;
@@ -120,6 +185,21 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		}
 	}
 
+	private String getVisibilityString(INamedElement e) {
+		if (this.isVisibilityVisible) {
+			if (e.isPrivateVisibility()) {
+				return "- ";
+			} else if (e.isProtectedVisibility()) {
+				return "# ";
+			} else if (e.isPackageVisibility()) {
+				return "~ ";
+			} else {
+				return "+ ";
+			}
+		}
+		return "";
+	}
+
 	private boolean isTargetOfUsageLink() {
 		var p = (INodePresentation) this.getAstahPresentation();
 		for (var link : p.getLinks()) {
@@ -141,12 +221,20 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 			if (model instanceof IEnumeration) {
 				this.buildEnumerationLiterals(graph, parent);
 			} else {
-				this.buildAttributes(graph, parent);
-				this.buildSeparator(graph, parent);
-				this.buildOperations(graph, parent);
+				if (this.isAttrCompartmentVisible) {
+					this.buildAttributes(graph, parent);
+				}
+				if (this.isOperationCompartmentVisible) {
+					if (this.isAttrCompartmentVisible) {
+						this.buildSeparator(graph, parent);
+					}
+					this.buildOperations(graph, parent);
+				}
 			}
-			var geo = parent.getGeometry();
-			geo.setHeight(this.calculatedHeight);
+			if (this.getHeight() < this.calculatedHeight) {
+				var geo = parent.getGeometry();
+				geo.setHeight(this.calculatedHeight);
+			}
 		} else if (stereotypes.contains("business")) {
 			var styles = "html=1;endArrow=none;";
 			var separator = (mxCell) graph.insertEdge(parent, generateId(), null, null, null, styles);
@@ -176,21 +264,47 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		var model = (IClass) this.getAstahPresentation().getModel();
 
 		for (var attr : model.getAttributes()) {
-			var association = attr.getAssociation();
-			if (association != null) {
-				continue;
-			}
-			var sb = new StringBuilder();
-			sb.append(getVisibilityString(attr));
-			sb.append(attr.getName());
-			sb.append(" : ");
-			sb.append(attr.getTypeExpression());
+			if (attr.isPublicVisibility() && this.isPublicAttrVisible
+					|| attr.isPackageVisibility() && this.isPackageAttrVisible
+					|| attr.isProtectedVisibility() && this.isProtectedAttrVisible
+					|| attr.isPrivateVisibility() && this.isPrivateAttrVisible) {
+				var association = attr.getAssociation();
+				if (association != null) {
+					continue;
+				}
+				var sb = new StringBuilder();
+				sb.append(getVisibilityString(attr));
+				if (this.isAttrStereotypeVisible) {
+					for (var stereotype : attr.getStereotypes()) {
+						sb.append("&lt;&lt;");
+						sb.append(stereotype);
+						sb.append("&gt;&gt;");
+					}
+				}
+				sb.append(attr.getName());
+				if (this.isAttrTypeVisible) {
+					sb.append(" : ");
+					sb.append(attr.getTypeExpression());
+				}
+				if (this.isAttrInitialValueVisible && !attr.getInitialValue().isEmpty()) {
+					sb.append(" = ");
+					sb.append(attr.getInitialValue());
+				}
+				if (this.isAttrConstraintVisible) {
+					sb.append(" ");
+					for (var constraint : attr.getConstraints()) {
+						sb.append("{");
+						sb.append(constraint.getName());
+						sb.append("}");
+					}
+				}
 
-			var styles = "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;spacing=0;";
-			var attrText = (mxCell) graph.insertVertex(parent, generateId(), sb.toString(), 0, 0, 0, 0, styles);
-			var geo = attrText.getGeometry();
-			geo.setRect(0, pos, this.getWidth(), LINE_HEIGHT);
-			pos += LINE_HEIGHT;
+				var styles = "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;spacing=0;";
+				var attrText = (mxCell) graph.insertVertex(parent, generateId(), sb.toString(), 0, 0, 0, 0, styles);
+				var geo = attrText.getGeometry();
+				geo.setRect(0, pos, this.getWidth(), LINE_HEIGHT);
+				pos += LINE_HEIGHT;
+			}
 		}
 		this.attributesSeparatorPosition = pos;
 	}
@@ -203,21 +317,70 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 	}
 
 	protected void buildOperations(mxGraph graph, mxCell parent) {
-		var pos = this.attributesSeparatorPosition + SEPARATOR_HEIGHT + SEPARATOR_MARGIN;
+		var pos = 0;
+		if (this.isAttrCompartmentVisible) {
+			pos = this.attributesSeparatorPosition + SEPARATOR_HEIGHT + SEPARATOR_MARGIN;
+			;
+		} else {
+			pos = this.classNameSeparatorPosition + SEPARATOR_MARGIN;
+		}
+
 		var model = (IClass) this.getAstahPresentation().getModel();
 
 		for (var ope : model.getOperations()) {
-			var sb = new StringBuilder();
-			sb.append(getVisibilityString(ope));
-			sb.append(ope.getName());
-			sb.append(" : ");
-			sb.append(ope.getQualifiedReturnTypeExpression());
+			if (ope.isPublicVisibility() && this.isPublicOperationVisible
+					|| ope.isPackageVisibility() && this.isPackageOperationVisible
+					|| ope.isProtectedVisibility() && this.isProtectedOperationVisible
+					|| ope.isPrivateVisibility() && this.isPrivateOperationVisible) {
 
-			var styles = "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;spacing=0;";
-			var opeText = (mxCell) graph.insertVertex(parent, generateId(), sb.toString(), 0, 0, 0, 0, styles);
-			var geo = opeText.getGeometry();
-			geo.setRect(0, pos, this.getWidth(), LINE_HEIGHT);
-			pos += LINE_HEIGHT;
+				var sb = new StringBuilder();
+				sb.append(getVisibilityString(ope));
+				if (this.isOperationStereotypeVisible) {
+					for (var stereotype : ope.getStereotypes()) {
+						sb.append("&lt;&lt;");
+						sb.append(stereotype);
+						sb.append("&gt;&gt;");
+					}
+				}
+				sb.append(ope.getName());
+				sb.append("(");
+				if (this.isOperationParamVisible) {
+					var paramStrings = new ArrayList<String>();
+					for (var param : ope.getParameters()) {
+						StringBuilder paramSb = new StringBuilder();
+						if (this.isOperationParamDirectionVisible) {
+							paramSb.append(param.getDirection());
+							paramSb.append(" ");
+						}
+						paramSb.append(param.getName());
+						if (this.isOperationParamTypeVisible) {
+							paramSb.append(" : ");
+							paramSb.append(param.getTypeExpression());
+						}
+						paramStrings.add(paramSb.toString());
+					}
+					sb.append(String.join(", ", paramStrings));
+				}
+				sb.append(")");
+				if (this.isOperationReturnTypeVisible) {
+					sb.append(" : ");
+					sb.append(ope.getQualifiedReturnTypeExpression());
+				}
+				if (this.isOperationConstraintVisible) {
+					sb.append(" ");
+					for (var constraint : ope.getConstraints()) {
+						sb.append("{");
+						sb.append(constraint.getName());
+						sb.append("}");
+					}
+				}
+
+				var styles = "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;spacing=0;";
+				var opeText = (mxCell) graph.insertVertex(parent, generateId(), sb.toString(), 0, 0, 0, 0, styles);
+				var geo = opeText.getGeometry();
+				geo.setRect(0, pos, this.getWidth(), LINE_HEIGHT);
+				pos += LINE_HEIGHT;
+			}
 		}
 		this.calculatedHeight = pos + SEPARATOR_MARGIN;
 	}
