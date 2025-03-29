@@ -13,8 +13,9 @@ public class MxGraphEdgeBuilder extends MxGraphElementBuilder {
 	private MxGraphNodeBuilder source;
 	private MxGraphNodeBuilder target;
 	private Point2D[] allPoints;
+
 	private boolean showLabel = true;
-	
+
 	public MxGraphEdgeBuilder(ILinkPresentation link, MxGraphNodeBuilder source, MxGraphNodeBuilder target) {
 		super(link);
 		this.source = source;
@@ -22,11 +23,23 @@ public class MxGraphEdgeBuilder extends MxGraphElementBuilder {
 		this.allPoints = link.getPoints();
 		setValue(link.getLabel());
 	}
+
+	public MxGraphNodeBuilder getSource() {
+		return this.source;
+	}
+
+	public MxGraphNodeBuilder getTarget() {
+		return this.target;
+	}
 	
+	public Point2D[] getAllPoints() {
+		return allPoints;
+	}
+
 	public void setShowLabel(boolean value) {
 		this.showLabel = value;
 	}
-	
+
 	public boolean showLabel() {
 		return this.showLabel;
 	}

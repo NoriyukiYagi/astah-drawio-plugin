@@ -1,5 +1,7 @@
 package astah_drawio_plugin.internal.mxgraph.builder.edge;
 
+import java.util.ArrayList;
+
 import com.change_vision.jude.api.inf.model.IAssociation;
 import com.change_vision.jude.api.inf.model.IAttribute;
 import com.change_vision.jude.api.inf.model.IMultiplicityRange;
@@ -13,6 +15,10 @@ import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
 
 @GraphElementBuilder(astahTypes = "Association")
 public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
+
+	private static int QUANTIFIER_LINE_HEIGHT = 16;
+	private static int QUANTIFIER_MARGIN = 4;
+	private static int QUANTIFIER_CHAR_WIDTH = 6;
 
 	private static String getRoleName(IAttribute attr) {
 		var name = attr.getName();
@@ -79,9 +85,9 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 
 				if (Math.abs(atan) > Math.toRadians(45)) {
 					if (y2 > y1 && !isNameDirectionReverse) {
-						directionString = "▲";
-					} else {
 						directionString = "▼";
+					} else {
+						directionString = "▲";
 					}
 				} else if (x2 > x1 && !isNameDirectionReverse) {
 					directionString = "▶";
@@ -89,9 +95,9 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 					directionString = "◀";
 				}
 			} else if (y2 > y1 && !isNameDirectionReverse) {
-				directionString = "▲";
-			} else {
 				directionString = "▼";
+			} else {
+				directionString = "▲";
 			}
 			this.setValue(link.getLabel() + directionString);
 		} else {
@@ -165,8 +171,10 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		this.buildStereotypeLabel(graph, parent);
 		this.buildEndANameLabel(graph, parent);
 		this.buildEndAMultiplicityLabel(graph, parent);
+		this.buildEndAQuantifier(graph, parent);
 		this.buildEndBNameLabel(graph, parent);
 		this.buildEndBMultiplicityLabel(graph, parent);
+		this.buildEndBQuantifier(graph, parent);
 	}
 
 	private void buildEdgeLabel(mxGraph graph, mxCell parent) {
@@ -245,6 +253,86 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		geo.setY(pointY);
 	}
 
+	private mxCell buildQuantifier(mxGraph graph, IAttribute attr) {
+		if (attr.getQualifiers().length == 0) {
+			return null;
+		}
+		
+		var lines = new ArrayList<String>();
+		for (var qualifier : attr.getQualifiers()) {
+			lines.add(qualifier.getName() + " : " + qualifier.getTypeExpression());
+		}
+		
+		var lineMaxLength = lines.stream().max((str1, str2) -> str1.length() - str2.length()).get();
+
+		var height = lines.size() * QUANTIFIER_LINE_HEIGHT + QUANTIFIER_MARGIN * 2;
+		var width = QUANTIFIER_CHAR_WIDTH * lineMaxLength.length() + QUANTIFIER_MARGIN * 2;
+		var label = String.join("\n", lines);
+
+		var styles = "fontStyle=0;html=1;whiteSpace=wrap;";
+		var quantifier = (mxCell) graph.insertVertex(graph.getDefaultParent(), generateId(), label, 0, 0, 0,
+				0,
+				styles);
+		var geo = quantifier.getGeometry();
+		geo.setWidth(width);
+		geo.setHeight(height);
+		return quantifier;
+	}
+
+	private void buildEndAQuantifier(mxGraph graph, mxCell parent) {
+		var link = this.getLinkPresentation();
+		var attr = ((IAssociation) link.getModel()).getMemberEnds()[0];
+		var quantifier = this.buildQuantifier(graph, attr);
+		if (quantifier == null) {
+			return;
+		}
+
+		var allPoints = this.getAllPoints();
+		var len = allPoints.length;
+		var x1 = allPoints[len - 1].getX();
+		var x2 = allPoints[len - 2].getX();
+		var y1 = allPoints[len - 1].getY();
+		var y2 = allPoints[len - 2].getY();
+		var geo = quantifier.getGeometry();
+		var width = geo.getWidth();
+		var height = geo.getHeight();
+		var target = this.getTarget().getOrBuild(graph);
+		var targetGeo = target.getGeometry();
+		if (x1 != x2) {
+			var atan = Math.atan((y2 - y1) / (x2 - x1));
+
+			if (Math.abs(atan) > Math.toRadians(45)) {
+				if (y2 > y1) {
+					// 下方向に限定子がある
+					geo.setX(x1 - width / 2);
+					geo.setY(targetGeo.getY() + targetGeo.getHeight());
+				} else {
+					// 上方向に限定子がある
+					geo.setX(x1 - width / 2);
+					geo.setY(targetGeo.getY() - height);
+				}
+			} else if (x2 > x1) {
+				// 右方向に限定子がある
+				geo.setX(targetGeo.getX() + targetGeo.getWidth());
+				geo.setY(y1 - height / 2);
+			} else {
+				// 左方向に限定子がある
+				geo.setX(targetGeo.getX() - width);
+				geo.setY(y1 - height / 2);
+			}
+		} else if (y2 > y1) {
+			// 下方向に限定子がある
+			geo.setX(y1 - width / 2);
+			geo.setY(targetGeo.getY() + targetGeo.getHeight());
+		} else {
+			// 上方向に限定子がある
+			geo.setX(x1 - width / 2);
+			geo.setY(targetGeo.getY() - height);
+		}
+
+		parent.setTarget(quantifier);
+	}
+
 	private void buildEndBNameLabel(mxGraph graph, mxCell parent) {
 		var link = this.getLinkPresentation();
 		var attr = ((IAssociation) link.getModel()).getMemberEnds()[1];
@@ -278,6 +366,60 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		var geo = nameText.getGeometry();
 		geo.setX(pointX);
 		geo.setY(pointY);
+	}
+
+	private void buildEndBQuantifier(mxGraph graph, mxCell parent) {
+		var link = this.getLinkPresentation();
+		var attr = ((IAssociation) link.getModel()).getMemberEnds()[1];
+		var quantifier = this.buildQuantifier(graph, attr);
+		if (quantifier == null) {
+			return;
+		}
+
+		var allPoints = this.getAllPoints();
+		var len = allPoints.length;
+		var x1 = allPoints[0].getX();
+		var x2 = allPoints[1].getX();
+		var y1 = allPoints[0].getY();
+		var y2 = allPoints[1].getY();
+		var geo = quantifier.getGeometry();
+		var width = geo.getWidth();
+		var height = geo.getHeight();
+		var source = this.getSource().getOrBuild(graph);
+		var sourceGeo = source.getGeometry();
+		if (x1 != x2) {
+			var atan = Math.atan((y2 - y1) / (x2 - x1));
+
+			if (Math.abs(atan) > Math.toRadians(45)) {
+				if (y2 > y1) {
+					// 下方向に限定子がある
+					geo.setX(x1 - width / 2);
+					geo.setY(sourceGeo.getY() + sourceGeo.getHeight());
+				} else {
+					// 上方向に限定子がある
+					geo.setX(x1 - width / 2);
+					geo.setY(sourceGeo.getY() - height);
+				}
+			} else if (x2 > x1) {
+				// 右方向に限定子がある
+				geo.setX(sourceGeo.getX() + sourceGeo.getWidth());
+				geo.setY(y1 - height / 2);
+			} else {
+				// 左方向に限定子がある
+				geo.setX(sourceGeo.getX() - width);
+				geo.setY(y1 - height / 2);
+			}
+		} else if (y2 > y1) {
+			// 下方向に限定子がある
+			geo.setX(y1 - width / 2);
+			geo.setY(sourceGeo.getY() + sourceGeo.getHeight());
+		} else {
+			// 上方向に限定子がある
+			geo.setX(x1 - width / 2);
+			geo.setY(sourceGeo.getY() - height);
+		}
+
+		parent.setSource(quantifier);
 	}
 
 }
