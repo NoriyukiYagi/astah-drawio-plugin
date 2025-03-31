@@ -1,5 +1,6 @@
 package astah_drawio_plugin.internal.mxgraph.builder.edge;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import com.change_vision.jude.api.inf.model.IAssociation;
@@ -17,8 +18,8 @@ import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
 public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 
 	private static int QUANTIFIER_LINE_HEIGHT = 16;
-	private static int QUANTIFIER_MARGIN = 4;
-	private static int QUANTIFIER_CHAR_WIDTH = 6;
+	private static int QUANTIFIER_PADDING = 8;
+	private static int QUANTIFIER_CHAR_WIDTH = 5;
 
 	private static String getRoleName(IAttribute attr) {
 		var name = attr.getName();
@@ -281,10 +282,11 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 			lines.add(qualifier.getName() + " : " + qualifier.getTypeExpression());
 		}
 
-		var lineMaxLength = lines.stream().max((str1, str2) -> str1.length() - str2.length()).get();
+		var lineMaxLength = lines.stream().max((str1, str2) -> str1.getBytes(StandardCharsets.UTF_8).length
+				- str2.getBytes(StandardCharsets.UTF_8).length).get();
 
-		var height = lines.size() * QUANTIFIER_LINE_HEIGHT + QUANTIFIER_MARGIN * 2;
-		var width = QUANTIFIER_CHAR_WIDTH * lineMaxLength.length() + QUANTIFIER_MARGIN * 2;
+		var height = lines.size() * QUANTIFIER_LINE_HEIGHT;
+		var width = QUANTIFIER_CHAR_WIDTH * lineMaxLength.length() + QUANTIFIER_PADDING * 2;
 		var label = String.join("\n", lines);
 
 		var styles = "fontStyle=0;html=1;whiteSpace=wrap;";
