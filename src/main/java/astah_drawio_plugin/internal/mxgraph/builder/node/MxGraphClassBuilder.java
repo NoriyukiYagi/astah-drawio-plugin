@@ -1,5 +1,6 @@
 package astah_drawio_plugin.internal.mxgraph.builder.node;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,6 +25,28 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 	private static int SEPARATOR_MARGIN = 4;
 	private static int SEPARATOR_HEIGHT = 8;
 	private static int LINE_HEIGHT = 16;
+	private static int TEMPLATE_PARAMLINE_HEIGHT = 16;
+	private static int TEMPLATE_PARAM_PADDING = 2;
+	private static int TEMPLATE_PARAM_CHAR_WIDTH = 5;
+	private static int TEMPLATE_PARAM_BOTTOM_MARGIN = 2;
+
+	private static void createGroup(mxGraph graph, mxCell cell1, mxCell cell2) {
+		var groupParent = cell1.getParent();
+		var geo1 = cell1.getGeometry();
+		var geo2 = cell2.getGeometry();
+		var groupX = Math.min(geo1.getX(), geo2.getX());
+		var groupY = Math.min(geo1.getY(), geo2.getY());
+		var groupW = Math.max(geo1.getX() + geo1.getWidth(), geo2.getX() + geo2.getWidth()) - groupX;
+		var groupH = Math.max(geo1.getY() + geo1.getHeight(), geo2.getY() + geo2.getHeight()) - groupY;
+		var group = (mxCell) graph.insertVertex(groupParent, generateId(), "", groupX, groupY, groupW,
+				groupH, "group");
+		cell1.setParent(group);
+		geo1.setX(geo1.getX() - groupX);
+		geo1.setY(geo1.getY() - groupY);
+		cell2.setParent(group);
+		geo2.setX(geo2.getX() - groupX);
+		geo2.setY(geo2.getY() - groupY);
+	}
 
 	private int classNameSeparatorPosition = 0;
 	private int attributesSeparatorPosition = 0;
@@ -135,7 +158,6 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 				this.addStyle("html", "1");
 				this.addStyle("align", "center");
 				this.addStyle("verticalAlign", "top");
-				this.addStyle("childLayout", "stackLayout");
 				this.addStyle("horizontal", "1");
 				this.addStyle("startSize", String.valueOf(this.classNameSeparatorPosition));
 				this.addStyle("horizontalStack", "0");
@@ -235,6 +257,7 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 				var geo = parent.getGeometry();
 				geo.setHeight(this.calculatedHeight);
 			}
+			this.buildTemplateParams(graph, parent);
 		} else if (stereotypes.contains("business")) {
 			var styles = "html=1;endArrow=none;";
 			var separator = (mxCell) graph.insertEdge(parent, generateId(), null, null, null, styles);
@@ -245,7 +268,50 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		}
 	}
 
-	protected void buildEnumerationLiterals(mxGraph graph, mxCell parent) {
+	private void buildTemplateParams(mxGraph graph, mxCell parent) {
+		IClass model = (IClass) this.getAstahPresentation().getModel();
+		var templateParams = model.getTemplateParameters();
+		if (templateParams.length == 0) {
+			return;
+		}
+
+		var list = new ArrayList<String>();
+		for (var param : templateParams) {
+			var sb = new StringBuilder();
+			sb.append(param.getName());
+			var typeExp = param.getTypeExpression();
+			if (!typeExp.isBlank()) {
+				sb.append(":");
+				sb.append(typeExp);
+				var defaultValue = param.getDefaultValue();
+				if (defaultValue != null) {
+					sb.append("=");
+					sb.append(defaultValue);
+				}
+			}
+			list.add(sb.toString());
+		}
+		var label = String.join(", ", list);
+		var width = TEMPLATE_PARAM_CHAR_WIDTH * label.getBytes(StandardCharsets.UTF_8).length
+				+ TEMPLATE_PARAM_PADDING * 2;
+		var height = TEMPLATE_PARAMLINE_HEIGHT;
+		var styles = "fontStyle=0;dashed=1;html=1;whiteSpace=wrap;fillColor=%s;".formatted(this.getStyle("fillColor"));
+		var templateParamsCell = (mxCell) graph.insertVertex(parent.getParent(), generateId(), label, 0, 0, 0, 0,
+				styles);
+		var geo = templateParamsCell.getGeometry();
+		var parentGeo = parent.getGeometry();
+		if (width < parentGeo.getWidth()) {
+			geo.setX(parentGeo.getX() + parentGeo.getWidth() + 20 - width);
+		} else {
+			geo.setX(parentGeo.getX() + 20);
+		}
+		geo.setY(parentGeo.getY() - height / 2 - TEMPLATE_PARAM_BOTTOM_MARGIN);
+		geo.setWidth(width);
+		geo.setHeight(height);
+		createGroup(graph, parent, templateParamsCell);
+	}
+
+	private void buildEnumerationLiterals(mxGraph graph, mxCell parent) {
 		var pos = this.classNameSeparatorPosition + SEPARATOR_MARGIN;
 		var model = (IEnumeration) this.getAstahPresentation().getModel();
 
@@ -259,7 +325,7 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		this.calculatedHeight = pos;
 	}
 
-	protected void buildAttributes(mxGraph graph, mxCell parent) {
+	private void buildAttributes(mxGraph graph, mxCell parent) {
 		var pos = this.classNameSeparatorPosition + SEPARATOR_MARGIN;
 		var model = (IClass) this.getAstahPresentation().getModel();
 
@@ -309,14 +375,14 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		this.attributesSeparatorPosition = pos;
 	}
 
-	protected void buildSeparator(mxGraph graph, mxCell parent) {
+	private void buildSeparator(mxGraph graph, mxCell parent) {
 		var styles = "line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;";
 		var separator = (mxCell) graph.insertVertex(parent, generateId(), null, 0, 0, 0, 0, styles);
 		var geo = separator.getGeometry();
 		geo.setRect(0, this.attributesSeparatorPosition, this.getWidth(), SEPARATOR_HEIGHT);
 	}
 
-	protected void buildOperations(mxGraph graph, mxCell parent) {
+	private void buildOperations(mxGraph graph, mxCell parent) {
 		var pos = 0;
 		if (this.isAttrCompartmentVisible) {
 			pos = this.attributesSeparatorPosition + SEPARATOR_HEIGHT + SEPARATOR_MARGIN;

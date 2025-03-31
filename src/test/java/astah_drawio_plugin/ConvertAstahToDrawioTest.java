@@ -135,7 +135,7 @@ public class ConvertAstahToDrawioTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = { "SimpleDiagram", "Association", "Enumeration", "Package", "Icon", "Visibility",
-			"Quantifier" })
+			"Quantifier", "TemplateParam" })
 	void testClassDiagram(String baseName) throws Exception {
 		testDiagram("class/", baseName, "./test-result/class", true);
 	}
