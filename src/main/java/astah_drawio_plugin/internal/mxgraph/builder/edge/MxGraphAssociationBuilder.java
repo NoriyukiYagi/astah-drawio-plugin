@@ -64,6 +64,24 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		}
 	}
 
+	private static void createGroup(mxGraph graph, mxCell cell1, mxCell cell2) {
+		var groupParent = cell1.getParent();
+		var geo1 = cell1.getGeometry();
+		var geo2 = cell2.getGeometry();
+		var groupX = Math.min(geo1.getX(), geo2.getX());
+		var groupY = Math.min(geo1.getY(), geo2.getY());
+		var groupW = Math.max(geo1.getX() + geo1.getWidth(), geo2.getX() + geo2.getWidth()) - groupX;
+		var groupH = Math.max(geo1.getY() + geo1.getHeight(), geo2.getY() + geo2.getHeight()) - groupY;
+		var group = (mxCell) graph.insertVertex(groupParent, generateId(), "", groupX, groupY, groupW,
+				groupH, "group");
+		cell1.setParent(group);
+		geo1.setX(geo1.getX() - groupX);
+		geo1.setY(geo1.getY() - groupY);
+		cell2.setParent(group);
+		geo2.setX(geo2.getX() - groupX);
+		geo2.setY(geo2.getY() - groupY);
+	}
+
 	public MxGraphAssociationBuilder(ILinkPresentation link, MxGraphNodeBuilder source, MxGraphNodeBuilder target) {
 		super(link, source, target);
 
@@ -257,12 +275,12 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		if (attr.getQualifiers().length == 0) {
 			return null;
 		}
-		
+
 		var lines = new ArrayList<String>();
 		for (var qualifier : attr.getQualifiers()) {
 			lines.add(qualifier.getName() + " : " + qualifier.getTypeExpression());
 		}
-		
+
 		var lineMaxLength = lines.stream().max((str1, str2) -> str1.length() - str2.length()).get();
 
 		var height = lines.size() * QUANTIFIER_LINE_HEIGHT + QUANTIFIER_MARGIN * 2;
@@ -331,6 +349,7 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		}
 
 		parent.setTarget(quantifier);
+		createGroup(graph, target, quantifier);
 	}
 
 	private void buildEndBNameLabel(mxGraph graph, mxCell parent) {
@@ -377,7 +396,6 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		}
 
 		var allPoints = this.getAllPoints();
-		var len = allPoints.length;
 		var x1 = allPoints[0].getX();
 		var x2 = allPoints[1].getX();
 		var y1 = allPoints[0].getY();
@@ -420,6 +438,7 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		}
 
 		parent.setSource(quantifier);
+		createGroup(graph, source, quantifier);
 	}
 
 }
