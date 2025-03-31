@@ -18,6 +18,7 @@ public class MxGraphNoteBuilder extends MxGraphNodeBuilder {
 		this.addStyle("comic", "0");
 		this.addStyle("align", "left");
 		this.addStyle("size", "10");
+		this.addStyle("verticalAlign", "top");
 		this.setValue(p.getLabel());
 	}
 }
