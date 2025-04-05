@@ -1,6 +1,6 @@
 package astah_drawio_plugin.internal.mxgraph.builder.node;
 
-import java.nio.charset.StandardCharsets;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,18 +16,15 @@ import com.mxgraph.view.mxGraph;
 
 import astah_drawio_plugin.internal.annotation.GraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
+import astah_drawio_plugin.internal.utils.TextGeometryCalculator;
 
 @GraphElementBuilder(astahTypes = "Class")
 public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 
-	private static int CLASS_NAME_LINE_HEIGHT = 15;
 	private static int CLASS_NAME_MARGIN = 10;
 	private static int SEPARATOR_MARGIN = 4;
 	private static int SEPARATOR_HEIGHT = 8;
-	private static int LINE_HEIGHT = 16;
-	private static int TEMPLATE_PARAMLINE_HEIGHT = 16;
 	private static int TEMPLATE_PARAM_PADDING = 2;
-	private static int TEMPLATE_PARAM_CHAR_WIDTH = 5;
 	private static int TEMPLATE_PARAM_BOTTOM_MARGIN = 2;
 
 	private static void createGroup(mxGraph graph, mxCell cell1, mxCell cell2) {
@@ -133,7 +130,8 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		this.setValue(p.getLabel());
 
 		int lines = this.getLabel().split("\n").length;
-		this.classNameSeparatorPosition = CLASS_NAME_MARGIN + lines * CLASS_NAME_LINE_HEIGHT;
+		this.classNameSeparatorPosition = CLASS_NAME_MARGIN
+				+ lines * TextGeometryCalculator.getTextHeight("Helvetica", 12, Font.BOLD);
 
 		var notationType = p.getProperty(PresentationPropertyConstants.Key.NOTATION_TYPE);
 		var stereotypes = new HashSet<>(Arrays.asList(this.getStereotypes()));
@@ -292,9 +290,8 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 			list.add(sb.toString());
 		}
 		var label = String.join(", ", list);
-		var width = TEMPLATE_PARAM_CHAR_WIDTH * label.getBytes(StandardCharsets.UTF_8).length
-				+ TEMPLATE_PARAM_PADDING * 2;
-		var height = TEMPLATE_PARAMLINE_HEIGHT;
+		var width = TextGeometryCalculator.getTextWidth(label) + TEMPLATE_PARAM_PADDING * 2;
+		var height = TextGeometryCalculator.getTextHeight();
 		var styles = "fontStyle=0;dashed=1;html=1;whiteSpace=wrap;fillColor=%s;".formatted(this.getStyle("fillColor"));
 		var templateParamsCell = (mxCell) graph.insertVertex(parent.getParent(), generateId(), label, 0, 0, 0, 0,
 				styles);
@@ -314,13 +311,14 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 	private void buildEnumerationLiterals(mxGraph graph, mxCell parent) {
 		var pos = this.classNameSeparatorPosition + SEPARATOR_MARGIN;
 		var model = (IEnumeration) this.getAstahPresentation().getModel();
+		var lineHeight = TextGeometryCalculator.getTextHeight();
 
 		for (var e : model.getEnumerationLiterals()) {
 			var styles = "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;spacing=0;";
 			var attrText = (mxCell) graph.insertVertex(parent, generateId(), e.getName(), 0, 0, 0, 0, styles);
 			var geo = attrText.getGeometry();
-			geo.setRect(0, pos, this.getWidth(), LINE_HEIGHT);
-			pos += LINE_HEIGHT;
+			geo.setRect(0, pos, this.getWidth(), lineHeight);
+			pos += lineHeight;
 		}
 		this.calculatedHeight = pos;
 	}
@@ -328,6 +326,7 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 	private void buildAttributes(mxGraph graph, mxCell parent) {
 		var pos = this.classNameSeparatorPosition + SEPARATOR_MARGIN;
 		var model = (IClass) this.getAstahPresentation().getModel();
+		var lineHeight = TextGeometryCalculator.getTextHeight();
 
 		for (var attr : model.getAttributes()) {
 			if (attr.isPublicVisibility() && this.isPublicAttrVisible
@@ -368,8 +367,8 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 				var styles = "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;spacing=0;";
 				var attrText = (mxCell) graph.insertVertex(parent, generateId(), sb.toString(), 0, 0, 0, 0, styles);
 				var geo = attrText.getGeometry();
-				geo.setRect(0, pos, this.getWidth(), LINE_HEIGHT);
-				pos += LINE_HEIGHT;
+				geo.setRect(0, pos, this.getWidth(), lineHeight);
+				pos += lineHeight;
 			}
 		}
 		this.attributesSeparatorPosition = pos;
@@ -392,6 +391,7 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		}
 
 		var model = (IClass) this.getAstahPresentation().getModel();
+		var lineHeight = TextGeometryCalculator.getTextHeight();
 
 		for (var ope : model.getOperations()) {
 			if (ope.isPublicVisibility() && this.isPublicOperationVisible
@@ -444,8 +444,8 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 				var styles = "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;spacing=0;";
 				var opeText = (mxCell) graph.insertVertex(parent, generateId(), sb.toString(), 0, 0, 0, 0, styles);
 				var geo = opeText.getGeometry();
-				geo.setRect(0, pos, this.getWidth(), LINE_HEIGHT);
-				pos += LINE_HEIGHT;
+				geo.setRect(0, pos, this.getWidth(), lineHeight);
+				pos += lineHeight;
 			}
 		}
 		this.calculatedHeight = pos + SEPARATOR_MARGIN;
