@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -208,10 +209,17 @@ public class SelectDiagramsToDrawioFilesAction implements IPluginActionDelegate 
 						var selectedFolder = fileChooser.getSelectedFile();
 						var converter = ServiceLocator.getContainer().get(AstahDiagramToDrawioConverter.class);
 						var data = tableModel.getData();
+						var fileNames = new HashSet<String>();
 						for (var item : data) {
 							if (item.isChecked) {
 								var bytes = converter.convert(item.diagram);
 								var fileName = item.diagram.getName() + ".drawio";
+								var num = 1;
+								while (fileNames.contains(fileName)) {
+									fileName = item.diagram.getName() + "(" + num + ")" + ".drawio";
+									num++;
+								}
+								fileNames.add(fileName);
 								Files.write(Paths.get(selectedFolder.getAbsolutePath(), fileName), bytes,
 										StandardOpenOption.CREATE);
 							}
