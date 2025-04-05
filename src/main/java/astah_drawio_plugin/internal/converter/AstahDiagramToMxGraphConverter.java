@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
@@ -15,6 +16,7 @@ import com.mxgraph.view.mxGraph;
 
 import astah_drawio_plugin.internal.annotation.GraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphEdgeBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.factory.MxGraphEdgeBuilderFactory;
 import astah_drawio_plugin.internal.mxgraph.builder.factory.MxGraphEdgeBuilderFactoryMap;
@@ -137,11 +139,13 @@ public class AstahDiagramToMxGraphConverter {
 
 		graphModel.beginUpdate();
 		try {
-			for (var builder : nodeBuilders.values()) {
-				builder.buildIfNeeded(graph);
-			}
-			for (var builder : edgeBuilders) {
-				builder.buildIfNeeded(graph);
+			var builders = new Vector<MxGraphElementBuilder>();
+			builders.addAll(nodeBuilders.values());
+			builders.addAll(edgeBuilders);
+			builders.sort((a, b) -> a.getAstahPresentation().getDepth() - b.getAstahPresentation().getDepth());
+			for (var builder : builders) {
+				var built = builder.getOrBuild(graph);
+				graph.orderCells(true, new Object[] { built });
 			}
 		} finally {
 			graphModel.endUpdate();
