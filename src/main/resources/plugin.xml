@@ -5,10 +5,15 @@
 			<menu id="astah_drawio_plugin" label="%menu_group"
 				path="tool/astah_drawio_plugin">
 			</menu>
-			<action label="%menu_label"
-				class="astah_drawio_plugin.OutputDrawioFileAction"
+			<action label="%menu_label_current_diagram"
+				class="astah_drawio_plugin.CurrentDiagramToDrawioFileAction"
 				menubarPath="tool/astah_drawio_plugin/"
-				id="astah_drawio_plugin.OutputDrawioFileAction">
+				id="astah_drawio_plugin.CurrentDiagramToDrawioFileAction">
+			</action>
+			<action label="%menu_label_select_diagrams"
+				class="astah_drawio_plugin.SelectDiagramsToDrawioFilesAction"
+				menubarPath="tool/astah_drawio_plugin/"
+				id="astah_drawio_plugin.SelectDiagramsToDrawioFilesAction">
 			</action>
 		</actionSet>
 	</extension>

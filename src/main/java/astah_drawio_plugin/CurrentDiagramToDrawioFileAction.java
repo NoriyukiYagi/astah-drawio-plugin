@@ -15,7 +15,7 @@ import com.change_vision.jude.api.inf.ui.IWindow;
 import astah_drawio_plugin.internal.ServiceLocator;
 import astah_drawio_plugin.internal.converter.AstahDiagramToDrawioConverter;
 
-public class OutputDrawioFileAction implements IPluginActionDelegate {
+public class CurrentDiagramToDrawioFileAction implements IPluginActionDelegate {
 
 	@Override
 	public Object run(IWindow window) throws UnExpectedException {
