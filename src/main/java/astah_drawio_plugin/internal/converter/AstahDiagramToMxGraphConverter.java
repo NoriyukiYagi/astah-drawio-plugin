@@ -16,7 +16,6 @@ import com.mxgraph.view.mxGraph;
 
 import astah_drawio_plugin.internal.annotation.GraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphEdgeBuilder;
-import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.factory.MxGraphEdgeBuilderFactory;
 import astah_drawio_plugin.internal.mxgraph.builder.factory.MxGraphEdgeBuilderFactoryMap;
@@ -131,21 +130,24 @@ public class AstahDiagramToMxGraphConverter {
 
 	public mxGraph convert(IDiagram diagram) throws InvalidUsingException, SecurityException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		var nodeBuilders = createMxGraphNodeBuilders(diagram);
-		var edgeBuilders = createMxGraphEdgeBuilders(diagram, nodeBuilders);
+		var nodeBuildersMap = createMxGraphNodeBuilders(diagram);
+		var edgeBuilders = createMxGraphEdgeBuilders(diagram, nodeBuildersMap);
 
 		var graph = new mxGraph();
 		var graphModel = graph.getModel();
 
 		graphModel.beginUpdate();
 		try {
-			var builders = new Vector<MxGraphElementBuilder>();
-			builders.addAll(nodeBuilders.values());
-			builders.addAll(edgeBuilders);
-			builders.sort((a, b) -> a.getAstahPresentation().getDepth() - b.getAstahPresentation().getDepth());
-			for (var builder : builders) {
+			// Build Nodes
+			var nodeBuilders = new Vector<>(nodeBuildersMap.values());
+			nodeBuilders.sort((a, b) -> a.getAstahPresentation().getDepth() - b.getAstahPresentation().getDepth());
+			for (var builder : nodeBuilders) {
 				var built = builder.getOrBuild(graph);
-				graph.orderCells(true, new Object[] { built });
+				graph.cellsOrdered(new Object[] { built }, true);
+			}
+			// Build Edges
+			for (var builder : edgeBuilders) {
+				builder.buildIfNeeded(graph);
 			}
 		} finally {
 			graphModel.endUpdate();
