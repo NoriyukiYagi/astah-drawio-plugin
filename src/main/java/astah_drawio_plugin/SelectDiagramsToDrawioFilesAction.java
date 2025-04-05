@@ -25,6 +25,7 @@ import com.change_vision.jude.api.inf.model.IActivityDiagram;
 import com.change_vision.jude.api.inf.model.IClassDiagram;
 import com.change_vision.jude.api.inf.model.IDiagram;
 import com.change_vision.jude.api.inf.model.IModel;
+import com.change_vision.jude.api.inf.model.IPackage;
 import com.change_vision.jude.api.inf.ui.IPluginActionDelegate;
 import com.change_vision.jude.api.inf.ui.IWindow;
 
@@ -139,6 +140,21 @@ public class SelectDiagramsToDrawioFilesAction implements IPluginActionDelegate 
 			for (var child : model.getOwnedElements()) {
 				if (child instanceof IModel) {
 					diagrams.addAll(findDiagrams((IModel) child));
+				} else if (child instanceof IPackage) {
+					diagrams.addAll(findDiagrams((IPackage) child));
+				}
+			}
+			return diagrams;
+		}
+
+		private static List<IDiagram> findDiagrams(IPackage model) {
+			var diagrams = new ArrayList<IDiagram>();
+			diagrams.addAll(Arrays.asList(model.getDiagrams()));
+			for (var child : model.getOwnedElements()) {
+				if (child instanceof IModel) {
+					diagrams.addAll(findDiagrams((IModel) child));
+				} else if (child instanceof IPackage) {
+					diagrams.addAll(findDiagrams((IPackage) child));
 				}
 			}
 			return diagrams;
