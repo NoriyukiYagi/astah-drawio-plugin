@@ -7,9 +7,11 @@ import java.awt.image.BufferedImage;
 
 public class TextGeometryCalculator {
 
+	private static BufferedImage dummyImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_BINARY);
+
+	private static Graphics graphics = dummyImage.getGraphics();
+
 	public static int getTextWidth(String text, String fontName, int fontSize, int fontStyle) {
-		BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_BYTE_BINARY);
-		Graphics graphics = image.getGraphics();
 		Font font = new Font(fontName, fontStyle, fontSize);
 		FontMetrics fontMetrics = graphics.getFontMetrics(font);
 		return fontMetrics.stringWidth(text);
@@ -27,23 +29,29 @@ public class TextGeometryCalculator {
 		return getTextWidth(text, "Helvetica", 12, Font.PLAIN);
 	}
 
-	public static int getTextHeight(String fontName, int fontSize, int fontStyle) {
-		BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_BYTE_BINARY);
-		Graphics graphics = image.getGraphics();
+	private static int countTextLine(String text) {
+		return text.split("\n").length;
+	}
+
+	public static int getTextHeight(String text, String fontName, int fontSize, int fontStyle) {
 		Font font = new Font(fontName, fontStyle, fontSize);
 		FontMetrics fontMetrics = graphics.getFontMetrics(font);
-		return fontMetrics.getAscent() + fontMetrics.getDescent();
+		return (fontMetrics.getAscent() + fontMetrics.getDescent()) * countTextLine(text);
 	}
 
-	public static int getTextHeight(String fontName, int fontSize) {
-		return getTextHeight(fontName, fontSize, Font.PLAIN);
+	public static int getTextHeight(String text, String fontName, int fontSize) {
+		return getTextHeight(text, fontName, fontSize, Font.PLAIN);
 	}
 
-	public static int getTextHeight(int fontSize) {
-		return getTextHeight("Helvetica", fontSize, Font.PLAIN);
+	public static int getTextHeight(String text, int fontSize) {
+		return getTextHeight(text, "Helvetica", fontSize, Font.PLAIN);
+	}
+
+	public static int getTextHeight(String text) {
+		return getTextHeight(text, "Helvetica", 12, Font.PLAIN);
 	}
 
 	public static int getTextHeight() {
-		return getTextHeight("Helvetica", 12, Font.PLAIN);
+		return getTextHeight("", "Helvetica", 12, Font.PLAIN);
 	}
 }

@@ -142,7 +142,7 @@ public class ConvertAstahToDrawioTest {
 	}
 
 	@ParameterizedTest
-	@ValueSource(strings = { "SimpleDiagram", "ExtensionPoints" })
+	@ValueSource(strings = { "SimpleDiagram", "ExtensionPoints", "ExtensionPoints2" })
 	void testUsecaseDiagram(String baseName) throws Exception {
 		testDiagram("usecase/", baseName, "./test-result/usecase", true);
 	}

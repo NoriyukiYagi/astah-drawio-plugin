@@ -127,9 +127,8 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 
 		this.setValue(p.getLabel());
 
-		int lines = this.getLabel().split("\n").length;
 		this.classNameSeparatorPosition = CLASS_NAME_MARGIN
-				+ lines * TextGeometryCalculator.getTextHeight("Helvetica", 12, Font.BOLD);
+				+ TextGeometryCalculator.getTextHeight(this.getLabel(), "Helvetica", 12, Font.BOLD);
 
 		var notationType = p.getProperty(PresentationPropertyConstants.Key.NOTATION_TYPE);
 		var stereotypes = this.getStereotypes();

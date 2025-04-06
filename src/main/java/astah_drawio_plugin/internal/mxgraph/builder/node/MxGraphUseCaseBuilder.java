@@ -13,6 +13,9 @@ import astah_drawio_plugin.internal.utils.TextGeometryCalculator;
 @GraphElementBuilder(astahTypes = "UseCase")
 public class MxGraphUseCaseBuilder extends MxGraphNodeBuilder {
 
+	private static int NAME_TOP_MARGIN = 2;
+	private static int SEPARATOR_MARGIN = 4;
+
 	public MxGraphUseCaseBuilder(MxGraphNodeBuilder parent, INodePresentation p) {
 		super(parent, p);
 		this.setValue(p.getLabel());
@@ -52,15 +55,15 @@ public class MxGraphUseCaseBuilder extends MxGraphNodeBuilder {
 			lineGeo.setRelative(true);
 			var a = this.getWidth() / 2;
 			var b = this.getHeight() / 2;
-			var c = this.getHeight() / 4;
+			var c = TextGeometryCalculator.getTextHeight(this.getLabel()) + NAME_TOP_MARGIN + SEPARATOR_MARGIN;
 			var d = Math.sqrt(a * a * (1 - Math.pow((c - b) / b, 2)));
 			var px = a - d;
 			var qx = a + d;
 			lineGeo.setSourcePoint(new mxPoint(px, c));
 			lineGeo.setTargetPoint(new mxPoint(qx, c));
 
-			var labelX = px;
-			var labelY = c;
+			var labelX = this.getWidth() / 8;
+			var labelY = c + SEPARATOR_MARGIN;
 			var labelWidth = 2 * d;
 			var labelHeight = TextGeometryCalculator.getTextHeight();
 			var labelStyles = "text;html=1;strokeColor=none;fillColor=none;align=left;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;whiteSpace=wrap;spacing=0;";
