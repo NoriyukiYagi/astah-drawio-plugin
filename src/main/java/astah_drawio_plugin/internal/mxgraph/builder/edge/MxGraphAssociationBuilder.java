@@ -86,9 +86,8 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 
 		var props = link.getProperties();
 		var isNameDirectionVisible = Boolean.valueOf(props.get("name_direction_visibility").toString());
-		var isNameDirectionReverse = Boolean.valueOf(props.get("name_direction_reverse").toString());
+		var isNameDirectionReverse = "1".equals(props.get("name_direction_reverse"));
 		if (isNameDirectionVisible && link.getLabel().length() > 0) {
-			var directionString = "";
 			var points = link.getPoints();
 			var sourcePoint = points[0];
 			var targetPoint = points[points.length - 1];
@@ -102,21 +101,20 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 
 				if (Math.abs(atan) > Math.toRadians(45)) {
 					if (y2 > y1 && !isNameDirectionReverse) {
-						directionString = "▼";
+						this.setValue(link.getLabel() + "▼");
 					} else {
-						directionString = "▲";
+						this.setValue(link.getLabel() + "▲");
 					}
 				} else if (x2 > x1 && !isNameDirectionReverse) {
-					directionString = "▶";
+					this.setValue(link.getLabel() + "▶");
 				} else {
-					directionString = "◀";
+					this.setValue("◀" + link.getLabel());
 				}
 			} else if (y2 > y1 && !isNameDirectionReverse) {
-				directionString = "▼";
+				this.setValue(link.getLabel() + "▼");
 			} else {
-				directionString = "▲";
+				this.setValue(link.getLabel() + "▲");
 			}
-			this.setValue(link.getLabel() + directionString);
 		} else {
 			this.setValue(link.getLabel());
 		}
