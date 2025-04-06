@@ -16,7 +16,7 @@ public class MxGraphRectangleBuilder extends MxGraphNodeBuilder {
 		var isFilledString = p.getProperty("isfilled.color");
 		var isFilled = (isFilledString != null) && Boolean.parseBoolean(isFilledString);
 		if (!isFilled) {
-			this.removeStyle("fillColor");
+			this.addStyle("fillColor", "none");
 		}
 
 		var rectType = p.getProperty(PresentationPropertyConstants.Key.RECT_TYPE);
