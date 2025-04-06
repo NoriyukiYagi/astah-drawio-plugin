@@ -40,6 +40,7 @@ import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphRectangleBuilder
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphSendSignalActionBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphTextBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphTimeEventTriggerBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphUseCaseBuilder;
 
 public class AppModule implements DIContainerModule {
 
@@ -81,6 +82,7 @@ public class AppModule implements DIContainerModule {
 		map.putDefault(MxGraphSendSignalActionBuilder.class);
 		map.putDefault(MxGraphTextBuilder.class);
 		map.putDefault(MxGraphTimeEventTriggerBuilder.class);
+		map.putDefault(MxGraphUseCaseBuilder.class);
 		this.container.registerInstance(MxGraphNodeBuilderFactoryMap.class, map);
 	}
 

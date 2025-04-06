@@ -2,8 +2,6 @@ package astah_drawio_plugin.internal.mxgraph.builder.node;
 
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 
 import com.change_vision.jude.api.inf.model.IClass;
 import com.change_vision.jude.api.inf.model.IEnumeration;
@@ -134,7 +132,7 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 				+ lines * TextGeometryCalculator.getTextHeight("Helvetica", 12, Font.BOLD);
 
 		var notationType = p.getProperty(PresentationPropertyConstants.Key.NOTATION_TYPE);
-		var stereotypes = new HashSet<>(Arrays.asList(this.getStereotypes()));
+		var stereotypes = this.getStereotypes();
 
 		if ("normal".equals(notationType)) {
 			if (stereotypes.contains("interface") && this.isTargetOfUsageLink()) {
@@ -202,6 +200,16 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 			this.addStyle("verticalLabelPosition", "bottom");
 			this.addStyle("align", "center");
 			this.addStyle("verticalAlign", "top");
+		} else if (stereotypes.contains("actor")) {
+			this.setStereotypesVisible(false);
+			this.addStyle("shape", "umlActor");
+			this.addStyle("verticalLabelPosition", "bottom");
+			this.addStyle("verticalAlign", "top");
+			this.addStyle("html", "1");
+			// Fix aspect
+			var oldWidth = this.getWidth();
+			this.setWidth(this.getHeight() / 2);
+			this.setX(this.getX() + (oldWidth - this.getWidth()) / 2);
 		}
 	}
 
@@ -235,7 +243,6 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		super.buildChildren(graph, parent);
 
 		var notationType = this.getAstahPresentation().getProperty(PresentationPropertyConstants.Key.NOTATION_TYPE);
-		var stereotypes = new HashSet<>(Arrays.asList(this.getStereotypes()));
 		if ("normal".equals(notationType) && !this.isTargetOfUsageLink()) {
 			var model = this.getAstahPresentation().getModel();
 			if (model instanceof IEnumeration) {
@@ -256,13 +263,18 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 				geo.setHeight(this.calculatedHeight);
 			}
 			this.buildTemplateParams(graph, parent);
-		} else if (stereotypes.contains("business")) {
+		} else if (this.getStereotypes().contains("business")) {
 			var styles = "html=1;endArrow=none;";
 			var separator = (mxCell) graph.insertEdge(parent, generateId(), null, null, null, styles);
 			var geo = separator.getGeometry();
 			geo.setRelative(true);
-			geo.setSourcePoint(new mxPoint(this.getWidth() / 2, this.getHeight()));
-			geo.setTargetPoint(new mxPoint(this.getWidth(), this.getHeight() / 2));
+			if (this.getStereotypes().contains("actor")) {
+				geo.setSourcePoint(new mxPoint(this.getWidth() / 2, this.getHeight() / 4));
+				geo.setTargetPoint(new mxPoint(this.getWidth() * 3 / 4, this.getHeight() / 8));
+			} else {
+				geo.setSourcePoint(new mxPoint(this.getWidth() / 2, this.getHeight()));
+				geo.setTargetPoint(new mxPoint(this.getWidth(), this.getHeight() / 2));
+			}
 		}
 	}
 

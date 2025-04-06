@@ -6,7 +6,7 @@ import astah_drawio_plugin.internal.annotation.GraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphEdgeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
 
-@GraphElementBuilder(astahTypes = "Dependency")
+@GraphElementBuilder(astahTypes = { "Dependency", "Extend", "Include" })
 public class MxGraphDependencyBuilder extends MxGraphEdgeBuilder {
 
 	public MxGraphDependencyBuilder(ILinkPresentation link, MxGraphNodeBuilder source, MxGraphNodeBuilder target) {
