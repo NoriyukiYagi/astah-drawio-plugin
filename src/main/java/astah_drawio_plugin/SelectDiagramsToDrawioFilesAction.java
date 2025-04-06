@@ -27,6 +27,7 @@ import com.change_vision.jude.api.inf.model.IClassDiagram;
 import com.change_vision.jude.api.inf.model.IDiagram;
 import com.change_vision.jude.api.inf.model.IModel;
 import com.change_vision.jude.api.inf.model.IPackage;
+import com.change_vision.jude.api.inf.model.IUseCaseDiagram;
 import com.change_vision.jude.api.inf.ui.IPluginActionDelegate;
 import com.change_vision.jude.api.inf.ui.IWindow;
 
@@ -86,6 +87,8 @@ public class SelectDiagramsToDrawioFilesAction implements IPluginActionDelegate 
 					return messages.getString("diagram_activity");
 				} else if (diagram instanceof IClassDiagram) {
 					return messages.getString("diagram_class");
+				} else if (diagram instanceof IUseCaseDiagram) {
+					return messages.getString("diagram_usecase");
 				} else {
 					return messages.getString("unsupported_diagram");
 				}
