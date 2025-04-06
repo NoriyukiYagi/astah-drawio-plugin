@@ -54,7 +54,7 @@ public class MxGraphNodeBuilder extends MxGraphElementBuilder {
 	public void setHeight(double height) {
 		this.height = height;
 	}
-	
+
 	public double getCenterX() {
 		return (x + width / 2);
 	}
@@ -94,5 +94,5 @@ public class MxGraphNodeBuilder extends MxGraphElementBuilder {
 	protected void buildChildren(mxGraph graph, mxCell parent) {
 		// no operation
 	}
-	
+
 }

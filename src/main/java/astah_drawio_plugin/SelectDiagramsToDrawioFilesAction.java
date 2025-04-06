@@ -216,7 +216,7 @@ public class SelectDiagramsToDrawioFilesAction implements IPluginActionDelegate 
 								var fileName = item.diagram.getName() + ".drawio";
 								var num = 1;
 								while (fileNames.contains(fileName)) {
-									fileName = item.diagram.getName() + "(" + num + ")" + ".drawio";
+									fileName = "%s(%d).drawio".formatted(item.diagram.getName(), num);
 									num++;
 								}
 								fileNames.add(fileName);

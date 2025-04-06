@@ -219,12 +219,12 @@ public class MxGraphAssociationBuilder extends MxGraphEdgeBuilder {
 		var link = this.getLinkPresentation();
 		var props = link.getProperties();
 		var stereotypes = this.getStereotypes();
-		for (var i = 0; i < stereotypes.length; ++i) {
+		for (var i = 0; i < stereotypes.size(); ++i) {
 			var pointX = Double.valueOf(props.get("stereotype." + i + ".point.x").toString());
 			var pointY = Double.valueOf(props.get("stereotype." + i + ".point.y").toString());
 
 			var styles = "edgeLabel;html=1;align=left;verticalAlign=top;resizable=0;points=[];";
-			var label = "&lt;&lt;" + stereotypes[i] + "&gt;&gt;";
+			var label = "&lt;&lt;" + stereotypes.get(i) + "&gt;&gt;";
 			var nameText = (mxCell) graph.insertVertex(parent, generateId(), label, 0, 0, 0, 0,
 					styles);
 			var geo = nameText.getGeometry();

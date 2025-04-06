@@ -1,8 +1,11 @@
 package astah_drawio_plugin.internal.mxgraph.builder.base;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -28,7 +31,7 @@ public abstract class MxGraphElementBuilder {
 	private String id;
 	private HashMap<String, String> styles = new HashMap<>();
 	private String value;
-	private String[] stereotypes;
+	private List<String> stereotypes = new ArrayList<String>();
 	private boolean isStereotypesVisible = true;
 	private mxCell built = null;
 
@@ -37,7 +40,7 @@ public abstract class MxGraphElementBuilder {
 		this.id = generateId();
 		this.astahModel = astahPresentaion.getModel();
 		if (this.astahModel != null) {
-			this.setStereotypes(astahModel.getStereotypes());
+			this.setStereotypes(Arrays.asList(astahModel.getStereotypes()));
 		}
 
 		var props = this.astahPresentation.getProperties();
@@ -138,11 +141,11 @@ public abstract class MxGraphElementBuilder {
 		this.value = value;
 	}
 
-	public String[] getStereotypes() {
+	public List<String> getStereotypes() {
 		return stereotypes;
 	}
 
-	public void setStereotypes(String[] stereotypes) {
+	public void setStereotypes(List<String> stereotypes) {
 		this.stereotypes = stereotypes;
 	}
 
@@ -156,10 +159,10 @@ public abstract class MxGraphElementBuilder {
 
 	public String getLabel() {
 		var label = new StringBuilder();
-		if (this.isStereotypesVisible && this.stereotypes != null && this.stereotypes.length > 0) {
-			for (var i = 0; i < this.stereotypes.length; ++i) {
+		if (this.isStereotypesVisible && this.stereotypes != null && this.stereotypes.size() > 0) {
+			for (var stereotype : stereotypes) {
 				label.append("&lt;&lt;");
-				label.append(this.stereotypes[i]);
+				label.append(stereotype);
 				label.append("&gt;&gt;");
 				label.append("\n");
 			}
