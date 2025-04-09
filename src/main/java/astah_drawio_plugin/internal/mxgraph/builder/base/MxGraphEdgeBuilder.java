@@ -21,7 +21,8 @@ public class MxGraphEdgeBuilder extends MxGraphElementBuilder {
 		this.source = source;
 		this.target = target;
 		this.allPoints = link.getPoints();
-		setValue(link.getLabel());
+		this.setValue(link.getLabel());
+		this.addStyle("labelBackgroundColor", "none");
 	}
 
 	public MxGraphNodeBuilder getSource() {
@@ -31,9 +32,9 @@ public class MxGraphEdgeBuilder extends MxGraphElementBuilder {
 	public MxGraphNodeBuilder getTarget() {
 		return this.target;
 	}
-	
+
 	public Point2D[] getAllPoints() {
-		return allPoints;
+		return this.allPoints;
 	}
 
 	public void setShowLabel(boolean value) {
@@ -53,8 +54,14 @@ public class MxGraphEdgeBuilder extends MxGraphElementBuilder {
 		geo.setSourcePoint(new mxPoint(this.allPoints[0]));
 		geo.setTargetPoint(new mxPoint(this.allPoints[this.allPoints.length - 1]));
 		var points = new ArrayList<mxPoint>();
-		for (var i = 1; i < this.allPoints.length - 1; ++i) {
-			points.add(new mxPoint(this.allPoints[i]));
+		if ("orthogonalEdgeStyle".equals(this.getStyle("edgeStyle"))) {
+			for (var i = 0; i < this.allPoints.length; ++i) {
+				points.add(new mxPoint(this.allPoints[i]));
+			}
+		} else {
+			for (var i = 1; i < this.allPoints.length - 1; ++i) {
+				points.add(new mxPoint(this.allPoints[i]));
+			}
 		}
 		geo.setPoints(points);
 		if (this.source != null) {
