@@ -6,7 +6,7 @@ import com.change_vision.jude.api.inf.presentation.PresentationPropertyConstants
 import astah_drawio_plugin.internal.annotation.GraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
 
-@GraphElementBuilder(astahTypes = { "ForkNode", "JoinNode" })
+@GraphElementBuilder(astahTypes = { "ForkNode", "JoinNode", "ForkPseudostate", "JoinPseudostate" })
 public class MxGraphForkJoinBuilder extends MxGraphNodeBuilder {
 
 	public MxGraphForkJoinBuilder(MxGraphNodeBuilder parent, INodePresentation p) {

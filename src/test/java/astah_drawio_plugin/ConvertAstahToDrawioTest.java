@@ -146,4 +146,10 @@ public class ConvertAstahToDrawioTest {
 	void testUsecaseDiagram(String baseName) throws Exception {
 		testDiagram("usecase/", baseName, "./test-result/usecase", true);
 	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "SimpleDiagram", "EntryExitPoint", "ForkJoin", "Submachine" })
+	void testStatemachineDiagram(String baseName) throws Exception {
+		testDiagram("statemachine/", baseName, "./test-result/statemachine", true);
+	}
 }

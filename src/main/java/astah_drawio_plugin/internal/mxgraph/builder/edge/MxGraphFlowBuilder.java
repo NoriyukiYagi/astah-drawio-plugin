@@ -6,7 +6,7 @@ import astah_drawio_plugin.internal.annotation.GraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphEdgeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
 
-@GraphElementBuilder(astahTypes = "ControlFlow/ObjectFlow")
+@GraphElementBuilder(astahTypes = { "ControlFlow/ObjectFlow", "Transition" })
 public class MxGraphFlowBuilder extends MxGraphEdgeBuilder {
 
 	public MxGraphFlowBuilder(ILinkPresentation link, MxGraphNodeBuilder source, MxGraphNodeBuilder target) {

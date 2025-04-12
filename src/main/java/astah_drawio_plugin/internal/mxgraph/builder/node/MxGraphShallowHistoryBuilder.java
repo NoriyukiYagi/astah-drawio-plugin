@@ -5,14 +5,13 @@ import com.change_vision.jude.api.inf.presentation.INodePresentation;
 import astah_drawio_plugin.internal.annotation.GraphElementBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.base.MxGraphNodeBuilder;
 
-@GraphElementBuilder(astahTypes = "ActivityFinal")
-public class MxGraphActivityFinalBuilder extends MxGraphNodeBuilder {
+@GraphElementBuilder(astahTypes = "ShallowHistoryPseudostate")
+public class MxGraphShallowHistoryBuilder extends MxGraphNodeBuilder {
 
-	public MxGraphActivityFinalBuilder(MxGraphNodeBuilder parent, INodePresentation p) {
+	public MxGraphShallowHistoryBuilder(MxGraphNodeBuilder parent, INodePresentation p) {
 		super(parent, p);
+		this.addStyle("ellipse", null);
 		this.addStyle("html", "1");
-		this.addStyle("shape", "endState");
-		this.addStyle("fillColor", "strokeColor");
-		this.setStereotypesVisible(false);
+		this.setValue("H");
 	}
 }

@@ -19,12 +19,14 @@ import astah_drawio_plugin.internal.mxgraph.builder.factory.MxGraphEdgeBuilderFa
 import astah_drawio_plugin.internal.mxgraph.builder.factory.MxGraphNodeBuilderFactoryMap;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphAcceptEventActionBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphActionBuilder;
-import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphActivityFinalBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphCallBehaviorActionBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphClassBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphConnectorBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphDecisionMergeNodeBuilder;
-import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphFlowFinalNodeBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphDeepHistoryBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphEntryPointBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphExitNodeBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphFinalNodeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphForkJoinBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphFrameBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphImageBuilder;
@@ -38,6 +40,10 @@ import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphPinBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphProcessObjectNodeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphRectangleBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphSendSignalActionBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphShallowHistoryBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphStateBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphStubStateBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphSubmachineStateBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphTextBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphTimeEventTriggerBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphUseCaseBuilder;
@@ -61,12 +67,12 @@ public class AppModule implements DIContainerModule {
 		var map = new MxGraphNodeBuilderFactoryMap();
 		map.putDefault(MxGraphAcceptEventActionBuilder.class);
 		map.putDefault(MxGraphActionBuilder.class);
-		map.putDefault(MxGraphActivityFinalBuilder.class);
+		map.putDefault(MxGraphFinalNodeBuilder.class);
 		map.putDefault(MxGraphCallBehaviorActionBuilder.class);
 		map.putDefault(MxGraphClassBuilder.class);
 		map.putDefault(MxGraphConnectorBuilder.class);
 		map.putDefault(MxGraphDecisionMergeNodeBuilder.class);
-		map.putDefault(MxGraphFlowFinalNodeBuilder.class);
+		map.putDefault(MxGraphExitNodeBuilder.class);
 		map.putDefault(MxGraphForkJoinBuilder.class);
 		map.putDefault(MxGraphFrameBuilder.class);
 		map.putDefault(MxGraphImageBuilder.class);
@@ -83,6 +89,12 @@ public class AppModule implements DIContainerModule {
 		map.putDefault(MxGraphTextBuilder.class);
 		map.putDefault(MxGraphTimeEventTriggerBuilder.class);
 		map.putDefault(MxGraphUseCaseBuilder.class);
+		map.putDefault(MxGraphShallowHistoryBuilder.class);
+		map.putDefault(MxGraphStateBuilder.class);
+		map.putDefault(MxGraphEntryPointBuilder.class);
+		map.putDefault(MxGraphDeepHistoryBuilder.class);
+		map.putDefault(MxGraphSubmachineStateBuilder.class);
+		map.putDefault(MxGraphStubStateBuilder.class);
 		this.container.registerInstance(MxGraphNodeBuilderFactoryMap.class, map);
 	}
 
