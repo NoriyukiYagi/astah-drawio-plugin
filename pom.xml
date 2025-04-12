@@ -13,7 +13,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>astah_drawio_plugin</groupId>
 	<artifactId>astah_drawio_plugin</artifactId>
-	<version>0.4.0</version>
+	<version>0.5.0</version>
 	<packaging>bundle</packaging>
 	<name>%bundle.name</name>
 	<description>%bundle.description</description>
