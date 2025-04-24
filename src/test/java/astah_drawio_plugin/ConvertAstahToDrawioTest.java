@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class ConvertAstahToDrawioTest {
 		// -- Output drawio
 		var drawioConv = container.get(MxGraphToDrawioConverter.class);
 		var fileData = drawioConv.convert(graph);
-		Files.write(testResultDrawio, fileData);
+		Files.write(testResultDrawio, fileData, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
 		// -- Export PNG
 		var process = Runtime.getRuntime().exec(
@@ -135,8 +136,7 @@ public class ConvertAstahToDrawioTest {
 
 	@ParameterizedTest
 	@ValueSource(strings = { "SimpleDiagram", "Association", "Association2", "Enumeration", "Package", "Icon",
-			"Visibility",
-			"Quantifier", "Quantifier2", "TemplateParam", "Order" })
+			"Visibility", "Quantifier", "Quantifier2", "TemplateParam", "Order" })
 	void testClassDiagram(String baseName) throws Exception {
 		testDiagram("class/", baseName, "./test-result/class", true);
 	}
