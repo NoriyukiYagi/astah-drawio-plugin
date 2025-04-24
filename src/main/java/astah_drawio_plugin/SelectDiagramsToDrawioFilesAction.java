@@ -227,7 +227,7 @@ public class SelectDiagramsToDrawioFilesAction implements IPluginActionDelegate 
 								}
 								fileNames.add(fileName);
 								Files.write(Paths.get(selectedFolder.getAbsolutePath(), fileName), bytes,
-										StandardOpenOption.CREATE);
+										StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 							}
 						}
 					}

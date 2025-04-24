@@ -34,7 +34,7 @@ public class CurrentDiagramToDrawioFileAction implements IPluginActionDelegate {
 				}
 				var converter = ServiceLocator.getContainer().get(AstahDiagramToDrawioConverter.class);
 				var bytes = converter.convert(currentDiagram);
-				Files.write(Paths.get(filename), bytes, StandardOpenOption.CREATE);
+				Files.write(Paths.get(filename), bytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
