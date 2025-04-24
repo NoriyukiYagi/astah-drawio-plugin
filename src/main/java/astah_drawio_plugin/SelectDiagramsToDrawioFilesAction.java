@@ -25,6 +25,7 @@ import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
 import com.change_vision.jude.api.inf.model.IActivityDiagram;
 import com.change_vision.jude.api.inf.model.IClassDiagram;
 import com.change_vision.jude.api.inf.model.IDiagram;
+import com.change_vision.jude.api.inf.model.IERDiagram;
 import com.change_vision.jude.api.inf.model.IModel;
 import com.change_vision.jude.api.inf.model.IPackage;
 import com.change_vision.jude.api.inf.model.IStateMachineDiagram;
@@ -92,6 +93,8 @@ public class SelectDiagramsToDrawioFilesAction implements IPluginActionDelegate 
 					return messages.getString("diagram_usecase");
 				} else if (diagram instanceof IStateMachineDiagram) {
 					return messages.getString("diagram_statemachine");
+				} else if (diagram instanceof IERDiagram) {
+					return messages.getString("diagram_er");
 				} else {
 					return messages.getString("unsupported_diagram");
 				}
