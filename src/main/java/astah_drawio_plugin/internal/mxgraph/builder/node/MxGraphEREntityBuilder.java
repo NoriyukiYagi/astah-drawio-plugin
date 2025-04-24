@@ -126,20 +126,20 @@ public class MxGraphEREntityBuilder extends MxGraphNodeBuilder {
 				stylesMapToString(this.baseStylesMap));
 		var geo = rect.getGeometry();
 		geo.setRect(0, labelHeight, this.getWidth(), this.getHeight() - labelHeight);
-		var y = labelHeight + KEYS_TOP_MARGIN;
-		y = this.buildPrimaryKeys(graph, parent, y, lineHeight, attrNameWidth, attrTypeWidth);
+		var y = KEYS_TOP_MARGIN;
+		y = this.buildPrimaryKeys(graph, rect, y, lineHeight, attrNameWidth, attrTypeWidth);
 
 		if ("primarykey".equals(this.displayLevel)) {
-			if (y > this.getHeight()) {
-				this.setHeight(y);
+			if (y > geo.getHeight()) {
+				geo.setHeight(y);
 			}
 			return;
 		}
 
-		y = this.buildSeparator(graph, parent, y);
-		y = this.buildNonPrimaryKeys(graph, parent, y, lineHeight, attrNameWidth, attrTypeWidth);
-		if (y > this.getHeight()) {
-			this.setHeight(y);
+		y = this.buildSeparator(graph, rect, y);
+		y = this.buildNonPrimaryKeys(graph, rect, y, lineHeight, attrNameWidth, attrTypeWidth);
+		if (y > geo.getHeight()) {
+			geo.setHeight(y);
 		}
 	}
 
