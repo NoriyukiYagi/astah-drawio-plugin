@@ -19,11 +19,11 @@ import astah_drawio_plugin.internal.utils.TextGeometryCalculator;
 @GraphElementBuilder(astahTypes = "Class")
 public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 
-	private static int CLASS_NAME_MARGIN = 10;
-	private static int SEPARATOR_MARGIN = 4;
-	private static int SEPARATOR_HEIGHT = 8;
-	private static int TEMPLATE_PARAM_PADDING = 2;
-	private static int TEMPLATE_PARAM_BOTTOM_MARGIN = 2;
+	private static final int CLASS_NAME_MARGIN = 10;
+	private static final int SEPARATOR_MARGIN = 4;
+	private static final int SEPARATOR_HEIGHT = 8;
+	private static final int TEMPLATE_PARAM_PADDING = 2;
+	private static final int TEMPLATE_PARAM_BOTTOM_MARGIN = 2;
 
 	private static void createGroup(mxGraph graph, mxCell cell1, mxCell cell2) {
 		var groupParent = cell1.getParent();
