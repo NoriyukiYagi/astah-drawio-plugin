@@ -60,8 +60,6 @@ public class MxGraphEREntityBuilder extends MxGraphNodeBuilder {
 			this.addStyle("spacingTop", "-2");
 			this.addStyle("fontStyle", "1");
 		}
-
-		System.out.println(p.getProperties());
 	}
 
 	private int calcAttrNameWidth() {
