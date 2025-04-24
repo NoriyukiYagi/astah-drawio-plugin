@@ -152,4 +152,10 @@ public class ConvertAstahToDrawioTest {
 	void testStatemachineDiagram(String baseName) throws Exception {
 		testDiagram("statemachine/", baseName, "./test-result/statemachine", true);
 	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "SimpleDiagram", "Subtype", "Types", "AttrType", "DisplayLevel", "NotNullFkVisible" })
+	void testErDiagram(String baseName) throws Exception {
+		testDiagram("er/", baseName, "./test-result/er", true);
+	}
 }

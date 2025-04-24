@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -23,6 +24,23 @@ public abstract class MxGraphElementBuilder {
 		byteBuffer.putLong(uuid.getMostSignificantBits());
 		byteBuffer.putLong(uuid.getLeastSignificantBits());
 		return Base64.getUrlEncoder().withoutPadding().encodeToString(byteBuffer.array());
+	}
+
+	protected static String stylesMapToString(Map<String, String> styles) {
+		var stylenames = new StringBuilder();
+		var props = new StringBuilder();
+		for (var entry : styles.entrySet()) {
+			if (entry.getValue() == null) {
+				stylenames.append(entry.getKey());
+				stylenames.append(";");
+			} else {
+				props.append(entry.getKey());
+				props.append("=");
+				props.append(entry.getValue());
+				props.append(";");
+			}
+		}
+		return stylenames.toString() + props.toString();
 	}
 
 	private IPresentation astahPresentation;
@@ -116,21 +134,12 @@ public abstract class MxGraphElementBuilder {
 		return this.styles.get(key);
 	}
 
+	public Map<String, String> getStylesMap() {
+		return new HashMap<String, String>(this.styles);
+	}
+
 	public String getStyles() {
-		var stylenames = new StringBuilder();
-		var props = new StringBuilder();
-		for (var entry : this.styles.entrySet()) {
-			if (entry.getValue() == null) {
-				stylenames.append(entry.getKey());
-				stylenames.append(";");
-			} else {
-				props.append(entry.getKey());
-				props.append("=");
-				props.append(entry.getValue());
-				props.append(";");
-			}
-		}
-		return stylenames.toString() + props.toString();
+		return stylesMapToString(this.styles);
 	}
 
 	public String getValue() {

@@ -8,6 +8,8 @@ import astah_drawio_plugin.internal.di.DIContainerModule;
 import astah_drawio_plugin.internal.mxgraph.builder.edge.MxGraphAssociationBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.edge.MxGraphContainmentBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.edge.MxGraphDependencyBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.edge.MxGraphERRelationshipBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.edge.MxGraphERSubtypeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.edge.MxGraphFlowBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.edge.MxGraphGeneralizationBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.edge.MxGraphHighlighterBuilder;
@@ -24,6 +26,7 @@ import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphClassBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphConnectorBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphDecisionMergeNodeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphDeepHistoryBuilder;
+import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphEREntityBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphEntryPointBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphExitNodeBuilder;
 import astah_drawio_plugin.internal.mxgraph.builder.node.MxGraphFinalNodeBuilder;
@@ -95,6 +98,7 @@ public class AppModule implements DIContainerModule {
 		map.putDefault(MxGraphDeepHistoryBuilder.class);
 		map.putDefault(MxGraphSubmachineStateBuilder.class);
 		map.putDefault(MxGraphStubStateBuilder.class);
+		map.putDefault(MxGraphEREntityBuilder.class);
 		this.container.registerInstance(MxGraphNodeBuilderFactoryMap.class, map);
 	}
 
@@ -110,6 +114,8 @@ public class AppModule implements DIContainerModule {
 		map.putDefault(MxGraphNoteAnchorBuilder.class);
 		map.putDefault(MxGraphRealizationBuilder.class);
 		map.putDefault(MxGraphUsageBuilder.class);
+		map.putDefault(MxGraphERRelationshipBuilder.class);
+		map.putDefault(MxGraphERSubtypeBuilder.class);
 		this.container.registerInstance(MxGraphEdgeBuilderFactoryMap.class, map);
 	}
 
