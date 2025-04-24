@@ -25,24 +25,6 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 	private static final int TEMPLATE_PARAM_PADDING = 2;
 	private static final int TEMPLATE_PARAM_BOTTOM_MARGIN = 2;
 
-	private static void createGroup(mxGraph graph, mxCell cell1, mxCell cell2) {
-		var groupParent = cell1.getParent();
-		var geo1 = cell1.getGeometry();
-		var geo2 = cell2.getGeometry();
-		var groupX = Math.min(geo1.getX(), geo2.getX());
-		var groupY = Math.min(geo1.getY(), geo2.getY());
-		var groupW = Math.max(geo1.getX() + geo1.getWidth(), geo2.getX() + geo2.getWidth()) - groupX;
-		var groupH = Math.max(geo1.getY() + geo1.getHeight(), geo2.getY() + geo2.getHeight()) - groupY;
-		var group = (mxCell) graph.insertVertex(groupParent, generateId(), "", groupX, groupY, groupW,
-				groupH, "group");
-		cell1.setParent(group);
-		geo1.setX(geo1.getX() - groupX);
-		geo1.setY(geo1.getY() - groupY);
-		cell2.setParent(group);
-		geo2.setX(geo2.getX() - groupX);
-		geo2.setY(geo2.getY() - groupY);
-	}
-
 	private int classNameSeparatorPosition = 0;
 	private int attributesSeparatorPosition = 0;
 	private int calculatedHeight = 0;
@@ -304,19 +286,18 @@ public class MxGraphClassBuilder extends MxGraphNodeBuilder {
 		var width = TextGeometryCalculator.getTextWidth(label) + TEMPLATE_PARAM_PADDING * 2;
 		var height = TextGeometryCalculator.getTextHeight();
 		var styles = "fontStyle=0;dashed=1;html=1;whiteSpace=wrap;fillColor=%s;".formatted(this.getStyle("fillColor"));
-		var templateParamsCell = (mxCell) graph.insertVertex(parent.getParent(), generateId(), label, 0, 0, 0, 0,
+		var templateParamsCell = (mxCell) graph.insertVertex(parent, generateId(), label, 0, 0, 0, 0,
 				styles);
 		var geo = templateParamsCell.getGeometry();
 		var parentGeo = parent.getGeometry();
 		if (width < parentGeo.getWidth()) {
-			geo.setX(parentGeo.getX() + parentGeo.getWidth() + 20 - width);
+			geo.setX(parentGeo.getWidth() + 20 - width);
 		} else {
-			geo.setX(parentGeo.getX() + 20);
+			geo.setX(20);
 		}
-		geo.setY(parentGeo.getY() - height / 2 - TEMPLATE_PARAM_BOTTOM_MARGIN);
+		geo.setY(- height / 2 - TEMPLATE_PARAM_BOTTOM_MARGIN);
 		geo.setWidth(width);
 		geo.setHeight(height);
-		createGroup(graph, parent, templateParamsCell);
 	}
 
 	private void buildEnumerationLiterals(mxGraph graph, mxCell parent) {
