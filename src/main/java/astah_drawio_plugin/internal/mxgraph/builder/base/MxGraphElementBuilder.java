@@ -106,7 +106,7 @@ public abstract class MxGraphElementBuilder {
 					break;
 				case PresentationPropertyConstants.Value.LINE_TYPE_DASH2:
 					this.styles.put("dashed", "1");
-					this.styles.put("dashPattern", "8 8");
+					this.styles.put("dashPattern", "4 2");
 					break;
 				default:
 					break;
