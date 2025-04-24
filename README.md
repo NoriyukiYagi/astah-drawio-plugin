@@ -7,3 +7,4 @@ Astah plugin that exports diagrams to Drawio files.
 - クラス図
 - ユースケース図
 - ステートマシン図
+- ER図(IDEF1X)
